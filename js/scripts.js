@@ -79,8 +79,9 @@ $(function(){
     if (newPlayer.bust === true){
       alert("BUST!");
       newPlayer.resetPlayer()
+      $('.game-table').text('');
     };
-    getImgs();
+    getPlayerImgs();
   });
 function getDealerImgs(){
   var images = "";
