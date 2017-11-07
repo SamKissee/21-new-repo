@@ -1,6 +1,17 @@
 var masterDeck = []
 resetDeck();
 console.log(masterDeck);
+
+ var winner = function (dealer, player) {
+  if (dealer > player) {
+    alert("Dealer wins")
+  } else if (dealer < player) {
+    alert("Player wins");
+  } else {
+    alert("Dealer wins");
+  }
+}
+
 function resetDeck() {
   function Cards(value, face, suit) {
     this.value = value
@@ -46,6 +57,14 @@ Player.prototype.scoreCalc = function(){
   }
   this.playerScore = score;
   // return score;
+}
+
+Player.prototype.ai = function() {
+  if(this.playerScore < 15) {
+    this.deal(1);
+  } else {
+    winner(this.playerScore, this.playerScore);
+  }
 }
 
 Player.prototype.deal = function(x) {
