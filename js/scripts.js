@@ -20,42 +20,40 @@ function resetDeck() {
     }
   });
 }
-function Player(type, hand, score){
+function Player(type, hand){
   this.id = 0;
   this.playerType = type;
   this.playerHand = hand;
-  this.playerScore = score;
+  this.playerScore = scoreCalc();
 }
 
 Player.prototype.resetPlayer = function(){
+  this.playerActive = false;
   this.playerHand = [];
   this.playerScore = 0;
 }
 
-Player.prototype.deal = function(x) {
-  var hand = [];
-  for (var i = 0; i < x; i++) {
-    var randomCard = Math.floor(Math.random() * masterDeck.length);
-    var popped = masterDeck[randomCard];
-    masterDeck.splice(randomCard,1);
-    hand.push(popped);
+Player.prototype.scoreCalc = function(){
+  var score = 0;
+  for (var i = 0; i < this.playerHand.length; i++) {
+    score += this.playerHand[i].number;
   }
-  return hand;
+  if (score <= 21) {
+    return score;
+  } else {
+    return "bust";
+  }
+
 }
 
-//Frontend logic
 $(function(){
   // var players = [];
-  var Dealer = new Player("Dealer", true, [], 0);
-  var newPlayer = new Player("Player", false, [], 0);
-
-  $("#deal").click(function() {
-    console.log(newPlayer.deal(2));
-    console.log(masterDeck);
-  });
+  var Dealer = new Player("Dealer", [], 0);
+  var newPlayer = new Player("Player", [(5, "hearts"), (10, "spades")]);
   // var howMany = parseInt($('#how-many').val());
   // for (var i = 0; i < howMany; i++) {
   //   players.push(newPlayer)
   //   players[i].id = i;
   // }
+  console.log(newPlayer.playerScore);
 });
