@@ -20,42 +20,70 @@ function resetDeck() {
     }
   });
 }
-function Player(type, hand, score){
+function Player(type, hand){
   this.id = 0;
+  this.bust = false
   this.playerType = type;
   this.playerHand = hand;
-  this.playerScore = score;
-}
-
-Player.prototype.resetPlayer = function(){
-  this.playerHand = [];
   this.playerScore = 0;
 }
 
+Player.prototype.resetPlayer = function(){
+  this.playerActive = false;
+  this.playerHand = [];
+  this.playerScore = 0;
+  this.bust = false
+}
+
+Player.prototype.scoreCalc = function(){
+  var score = 0;
+  for (var i = 0; i < this.playerHand.length; i++) {
+    score += this.playerHand[i].number;
+  }
+  if (score > 21) {
+    this.bust = true;
+  }
+  this.playerScore = score;
+  // return score;
+}
+
 Player.prototype.deal = function(x) {
-  var hand = [];
   for (var i = 0; i < x; i++) {
     var randomCard = Math.floor(Math.random() * masterDeck.length);
     var popped = masterDeck[randomCard];
-    masterDeck.splice(randomCard,1);
-    hand.push(popped);
+    masterDeck.splice(randomCard, 1);
+    this.playerHand.push(popped);
   }
-  return hand;
+
 }
 
-//Frontend logic
 $(function(){
   // var players = [];
-  var Dealer = new Player("Dealer", true, [], 0);
-  var newPlayer = new Player("Player", false, [], 0);
-
-  $("#deal").click(function() {
-    console.log(newPlayer.deal(2));
-    console.log(masterDeck);
-  });
+  var Dealer = new Player("Dealer", []);
+  var newPlayer = new Player("Player", []);
   // var howMany = parseInt($('#how-many').val());
   // for (var i = 0; i < howMany; i++) {
   //   players.push(newPlayer)
   //   players[i].id = i;
   // }
+  $('#deal').click(function(){
+    newPlayer.deal(2);
+    newPlayer.scoreCalc();
+    console.log(newPlayer.playerHand);
+    console.log(newPlayer.playerScore);
+    if (newPlayer.bust === true){
+      console.log("BUST!");
+    };
+  });
+  $('#hit').click(function(){
+    newPlayer.deal(1);
+    newPlayer.scoreCalc();
+    console.log(newPlayer.playerHand);
+    console.log(newPlayer.playerScore);
+    if (newPlayer.bust === true){
+      console.log("BUST!");
+    };
+  });
+
+
 });
