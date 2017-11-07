@@ -1,6 +1,5 @@
 var masterDeck = []
 resetDeck();
-console.log(masterDeck);
 
 
 
@@ -66,8 +65,6 @@ Player.prototype.deal = function(x) {
 Player.prototype.artificialIntel = function() {
 
   while (this.playerScore < 17) {
-    console.log(this.playerHand);
-    console.log(this.playerScore);
     this.deal(1);
     if (this.playerScore > 21) {
       this.bust = true;
@@ -88,13 +85,11 @@ $(function() {
     newPlayer.scoreCalc();
     getPlayerImgs();
     getDealerImgs();
-    console.log(newPlayer.playerHand);
 
   });
   $('#hit').click(function() {
     newPlayer.deal(1);
     newPlayer.scoreCalc();
-    console.log(newPlayer.playerHand);
     if (newPlayer.bust === true) {
       alert("BUST!");
       newPlayer.resetPlayer();
@@ -132,8 +127,6 @@ $(function() {
   });
 
   function winner() {
-    console.log(newPlayer.playerScore);
-    console.log(dealer.playerScore);
     getDealerImgs();
     $(".hidden").hide();
     if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
