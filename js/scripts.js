@@ -92,15 +92,15 @@ function getDealerImgs(){
       images += "<img src='img/" + dealer.playerHand[i].image + "'>";
     }
   }
-  $(".dealer").html(images);
+  $("#dealer").html(images);
 
 }
 function getPlayerImgs(){
-  var images = ""
+  var images = "";
   newPlayer.playerHand.forEach(function(card){
     images += "<img src='img/" + card.image + "'>";
   });
-  $(".playerOne").html(images);
+  $("#player1").html(images);
 }
 
 });
