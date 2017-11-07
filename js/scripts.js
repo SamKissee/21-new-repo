@@ -1,9 +1,12 @@
 var masterDeck = []
 resetDeck();
 console.log(masterDeck);
+
+
+
 function resetDeck() {
   function Cards(value, face, suit) {
-    this.value = value
+    this.value = value;
     this.face = face;
     this.suit = suit;
     this.image = face + suit + ".png";
@@ -22,9 +25,10 @@ function resetDeck() {
     }
   });
 }
-function Player(type, hand, score){
+function Player(type, hand, hold, bust){
   this.id = 0;
-  this.bust = false
+  this.bust = bust;
+  this.hold = hold;
   this.playerType = type;
   this.playerHand = hand;
   this.playerScore = score;
@@ -45,7 +49,7 @@ Player.prototype.scoreCalc = function(){
     this.bust = true;
   }
   this.playerScore = score;
-  // return score;
+  return score;
 }
 
 Player.prototype.deal = function(x) {
@@ -55,13 +59,27 @@ Player.prototype.deal = function(x) {
     masterDeck.splice(randomCard, 1);
     this.playerHand.push(popped);
   }
+  this.scoreCalc();
+}
 
+Player.prototype.artificialIntel = function() {
+
+  while (this.playerScore < 17) {
+    console.log(this.playerHand);
+    console.log(this.playerScore);
+    this.deal(1);
+    if (this.playerScore > 21) {
+      this.bust = true;
+    } else {
+      this.hold = true;
+    }
+  }
 }
 
 $(function(){
 
-  var dealer = new Player("Dealer", [], 0);
-  var newPlayer = new Player("Player", [], 0);
+  var dealer = new Player("Dealer", [], false, false);
+  var newPlayer = new Player("Player", [], false, false);
 
   $('#deal').click(function(){
     newPlayer.deal(2);
@@ -94,14 +112,33 @@ function getDealerImgs(){
   }
   $(".dealer").html(images);
 
-}
-function getPlayerImgs(){
-  var images = ""
-  newPlayer.playerHand.forEach(function(card){
-    images += "<img src='img/" + card.image + "'>";
+  }
+  function getPlayerImgs(){
+    var images = ""
+    newPlayer.playerHand.forEach(function(card){
+      images += "<img src='img/" + card.image + "'>";
+    });
+    $(".playerOne").html(images);
+  }
+  $("#hold").click(function() {
+    var dealerScore = dealer.scoreCalc();
+    var playerScore = newPlayer.scoreCalc();
+    dealer.artificialIntel();
+    winner();
   });
-  $(".playerOne").html(images);
-}
+
+  function winner() {
+    console.log(newPlayer.playerScore);
+    console.log(dealer.playerScore);
+    if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
+      alert("Player wins");
+      newPlayer.resetPlayer();
+    } else if (dealer.playerScore === newPlayer.playerScore) {
+     alert("Push");
+    } else {
+     alert("Dealer wins");
+    }
+    }
 
 });
 
