@@ -46,6 +46,8 @@ Player.prototype.scoreCalc = function(){
 
 }
 
+//TEST COMMENT TO TEST PULL
+
 $(function(){
   // var players = [];
   var Dealer = new Player("Dealer", [], 0);
