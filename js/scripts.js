@@ -110,7 +110,7 @@ function getDealerImgs(){
       images += "<img src='img/" + dealer.playerHand[i].image + "'>";
     }
   }
-  $(".dealer").html(images);
+  $("#dealer").html(images);
 
   }
   function getPlayerImgs(){
