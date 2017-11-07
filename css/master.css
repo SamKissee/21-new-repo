@@ -1,0 +1,18 @@
+.game-table{
+    position: relative;
+}
+
+.game-table img {
+    width: 130px;
+}
+
+.game-table img:not(:first-child) {
+    margin-left: -94px;
+}
+
+img.hidden {
+    position: absolute;
+    left: 130px;
+    bottom: 0;
+    top: 0;
+}

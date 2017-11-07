@@ -67,27 +67,40 @@ $(function(){
     newPlayer.deal(2);
     dealer.deal(2);
     newPlayer.scoreCalc();
-    newPlayer.playerHand.forEach(function(card){
-      $(".playerOne").append(
-        "<img src='img/" + card.image + "'>"
-      );
-    });
+    getPlayerImgs();
+    getDealerImgs();
     console.log(newPlayer.playerHand);
-    if (newPlayer.bust === true){
-      console.log("BUST!");
-      newPlayer.resetPlayer()
-    };
+
   });
   $('#hit').click(function(){
     newPlayer.deal(1);
     newPlayer.scoreCalc();
     console.log(newPlayer.playerHand);
     if (newPlayer.bust === true){
-      console.log("BUST!");
+      alert("BUST!");
       newPlayer.resetPlayer()
     };
+    getImgs();
   });
+function getDealerImgs(){
+  var images = "";
+  for (var i = 0; i < dealer.playerHand.length; i++) {
+    if (i === 0) {
+      images += "<img src='img/" + dealer.playerHand[i].image + "'><img class='hidden' src='img/1card-back.png'>";
+    } else {
+      images += "<img src='img/" + dealer.playerHand[i].image + "'>";
+    }
+  }
+  $(".dealer").html(images);
 
+}
+function getPlayerImgs(){
+  var images = ""
+  newPlayer.playerHand.forEach(function(card){
+    images += "<img src='img/" + card.image + "'>";
+  });
+  $(".playerOne").html(images);
+}
 
 });
 
