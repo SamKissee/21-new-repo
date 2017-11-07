@@ -22,18 +22,18 @@ function resetDeck() {
     }
   });
 }
-function Player(type, hand){
+function Player(type, hand, score){
   this.id = 0;
   this.bust = false
   this.playerType = type;
   this.playerHand = hand;
-  this.playerScore = 0;
+  this.playerScore = score;
 }
 
 Player.prototype.resetPlayer = function(){
   this.playerHand = [];
   this.playerScore = 0;
-  this.bust = false
+  this.bust = false;
 }
 
 Player.prototype.scoreCalc = function(){
@@ -60,13 +60,18 @@ Player.prototype.deal = function(x) {
 
 $(function(){
 
-  var dealer = new Player("Dealer", []);
-  var newPlayer = new Player("Player", []);
+  var dealer = new Player("Dealer", [], 0);
+  var newPlayer = new Player("Player", [], 0);
 
   $('#deal').click(function(){
     newPlayer.deal(2);
     dealer.deal(2);
     newPlayer.scoreCalc();
+    newPlayer.playerHand.forEach(function(card){
+      $(".playerOne").append(
+        "<img src='img/" + card.image + "'>"
+      );
+    });
     console.log(newPlayer.playerHand);
     if (newPlayer.bust === true){
       console.log("BUST!");
