@@ -20,11 +20,11 @@ function resetDeck() {
     }
   });
 }
-function Player(type, hand, score){
+function Player(type, hand){
   this.id = 0;
   this.playerType = type;
   this.playerHand = hand;
-  this.playerScore = score;
+  this.playerScore = scoreCalc();
 }
 
 Player.prototype.resetPlayer = function(){
@@ -33,13 +33,27 @@ Player.prototype.resetPlayer = function(){
   this.playerScore = 0;
 }
 
+Player.prototype.scoreCalc = function(){
+  var score = 0;
+  for (var i = 0; i < this.playerHand.length; i++) {
+    score += this.playerHand[i].number;
+  }
+  if (score <= 21) {
+    return score;
+  } else {
+    return "bust";
+  }
+
+}
+
 $(function(){
   // var players = [];
   var Dealer = new Player("Dealer", true, [], 0);
-  var newPlayer = new Player("Player", false, [], 0);
+  var newPlayer = new Player("Player", false, [(5, "hearts"), (10, "spades")], 0);
   // var howMany = parseInt($('#how-many').val());
   // for (var i = 0; i < howMany; i++) {
   //   players.push(newPlayer)
   //   players[i].id = i;
   // }
+  console.log(newPlayer.playerScore);
 });
