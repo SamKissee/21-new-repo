@@ -11,21 +11,22 @@ function resetDeck() {
     this.suit = suit;
     this.image = face + suit + ".png";
   }
-  var suits = ["hearts","spades", "diamonds", "clubs"]
-  suits.forEach(function(suit){
+  var suits = ["hearts", "spades", "diamonds", "clubs"]
+  suits.forEach(function(suit) {
     for (var i = 2; i <= 11; i++) {
       if (i === 10) {
-          masterDeck.push(new Cards (10 ,"10", suit));
-          masterDeck.push(new Cards (10, "J", suit));
-          masterDeck.push(new Cards (10 ,"Q", suit));
-          masterDeck.push(new Cards (10, "K", suit));
+        masterDeck.push(new Cards(10, "10", suit));
+        masterDeck.push(new Cards(10, "J", suit));
+        masterDeck.push(new Cards(10, "Q", suit));
+        masterDeck.push(new Cards(10, "K", suit));
       } else {
-          masterDeck.push(new Cards (i, "" + i + "", suit));
-        }
+        masterDeck.push(new Cards(i, "" + i + "", suit));
+      }
     }
   });
 }
-function Player(type, hand, hold, bust){
+
+function Player(type, hand, hold, bust, score) {
   this.id = 0;
   this.bust = bust;
   this.hold = hold;
@@ -34,13 +35,13 @@ function Player(type, hand, hold, bust){
   this.playerScore = score;
 }
 
-Player.prototype.resetPlayer = function(){
+Player.prototype.resetPlayer = function() {
   this.playerHand = [];
   this.playerScore = 0;
   this.bust = false;
 }
 
-Player.prototype.scoreCalc = function(){
+Player.prototype.scoreCalc = function() {
   var score = 0;
   for (var i = 0; i < this.playerHand.length; i++) {
     score += this.playerHand[i].value;
@@ -76,12 +77,12 @@ Player.prototype.artificialIntel = function() {
   }
 }
 
-$(function(){
+$(function() {
 
-  var dealer = new Player("Dealer", [], false, false);
-  var newPlayer = new Player("Player", [], false, false);
+  var dealer = new Player("Dealer", [], false, false, 0);
+  var newPlayer = new Player("Player", [], false, false, 0);
 
-  $('#deal').click(function(){
+  $('#deal').click(function() {
     newPlayer.deal(2);
     dealer.deal(2);
     newPlayer.scoreCalc();
@@ -90,35 +91,38 @@ $(function(){
     console.log(newPlayer.playerHand);
 
   });
-  $('#hit').click(function(){
+  $('#hit').click(function() {
     newPlayer.deal(1);
     newPlayer.scoreCalc();
     console.log(newPlayer.playerHand);
-    if (newPlayer.bust === true){
+    if (newPlayer.bust === true) {
       alert("BUST!");
-      newPlayer.resetPlayer()
+      newPlayer.resetPlayer();
+      dealer.resetPlayer();
       $('.game-table').text('');
     };
     getPlayerImgs();
   });
-function getDealerImgs(){
-  var images = "";
-  for (var i = 0; i < dealer.playerHand.length; i++) {
-    if (i === 0) {
-      images += "<img src='img/" + dealer.playerHand[i].image + "'><img class='hidden' src='img/1card-back.png'>";
-    } else {
-      images += "<img src='img/" + dealer.playerHand[i].image + "'>";
+
+  function getDealerImgs() {
+    var images = "";
+    for (var i = 0; i < dealer.playerHand.length; i++) {
+      if (i === 0) {
+        images += "<img src='img/" + dealer.playerHand[i].image + "'><img class='hidden' src='img/1card-back.png'>";
+      } else {
+        images += "<img src='img/" + dealer.playerHand[i].image + "'>";
+      }
     }
-  }
-  $("#dealer").html(images);
+    $("#dealer").html(images);
 
   }
-  function getPlayerImgs(){
+
+  function getPlayerImgs() {
     var images = ""
-    newPlayer.playerHand.forEach(function(card){
+    newPlayer.playerHand.forEach(function(card) {
       images += "<img src='img/" + card.image + "'>";
     });
-    $(".playerOne").html(images);
+    $("#player1").html(images);
   }
   $("#hold").click(function() {
     var dealerScore = dealer.scoreCalc();
@@ -130,16 +134,19 @@ function getDealerImgs(){
   function winner() {
     console.log(newPlayer.playerScore);
     console.log(dealer.playerScore);
+    getDealerImgs();
+    $(".hidden").hide();
     if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
       alert("Player wins");
       newPlayer.resetPlayer();
     } else if (dealer.playerScore === newPlayer.playerScore) {
-     alert("Push");
+      alert("Push");
     } else {
-     alert("Dealer wins");
+      alert("Dealer wins");
     }
-    }
-
+    newPlayer.resetPlayer();
+    dealer.resetPlayer();
+  }
 });
 
 // var players = [];
