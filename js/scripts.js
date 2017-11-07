@@ -2,19 +2,11 @@ var masterDeck = []
 resetDeck();
 console.log(masterDeck);
 
- var winner = function (dealer, player) {
-  if (dealer > player) {
-    alert("Dealer wins")
-  } else if (dealer < player) {
-    alert("Player wins");
-  } else {
-    alert("Dealer wins");
-  }
-}
+
 
 function resetDeck() {
   function Cards(value, face, suit) {
-    this.value = value
+    this.value = value;
     this.face = face;
     this.suit = suit;
     this.image = face + suit + ".png";
@@ -33,9 +25,10 @@ function resetDeck() {
     }
   });
 }
-function Player(type, hand){
+function Player(type, hand, hold, bust){
   this.id = 0;
-  this.bust = false
+  this.bust = bust;
+  this.hold = hold;
   this.playerType = type;
   this.playerHand = hand;
   this.playerScore = 0;
@@ -56,15 +49,7 @@ Player.prototype.scoreCalc = function(){
     this.bust = true;
   }
   this.playerScore = score;
-  // return score;
-}
-
-Player.prototype.ai = function() {
-  if(this.playerScore < 15) {
-    this.deal(1);
-  } else {
-    winner(this.playerScore, this.playerScore);
-  }
+  return score;
 }
 
 Player.prototype.deal = function(x) {
@@ -74,19 +59,34 @@ Player.prototype.deal = function(x) {
     masterDeck.splice(randomCard, 1);
     this.playerHand.push(popped);
   }
+  this.scoreCalc();
+}
 
+Player.prototype.artificialIntel = function() {
+
+  while (this.playerScore < 17) {
+    console.log(this.playerHand);
+    console.log(this.playerScore);
+    this.deal(1);
+    if (this.playerScore > 21) {
+      this.bust = true;
+    } else {
+      this.hold = true;
+    }
+  }
 }
 
 $(function(){
 
-  var dealer = new Player("Dealer", []);
-  var newPlayer = new Player("Player", []);
+  var dealer = new Player("Dealer", [], false, false);
+  var newPlayer = new Player("Player", [], false, false);
 
   $('#deal').click(function(){
     newPlayer.deal(2);
     dealer.deal(2);
-    newPlayer.scoreCalc();
     console.log(newPlayer.playerHand);
+    console.log(dealer.playerHand);
+    newPlayer.scoreCalc();
     if (newPlayer.bust === true){
       console.log("BUST!");
       newPlayer.resetPlayer()
@@ -97,11 +97,30 @@ $(function(){
     newPlayer.scoreCalc();
     console.log(newPlayer.playerHand);
     if (newPlayer.bust === true){
-      console.log("BUST!");
+      console.log("Dealer Wins");
       newPlayer.resetPlayer()
     };
   });
 
+  $("#hold").click(function() {
+    var dealerScore = dealer.scoreCalc();
+    var playerScore = newPlayer.scoreCalc();
+    dealer.artificialIntel();
+    winner();
+  });
+
+  function winner() {
+    console.log(newPlayer.playerScore);
+    console.log(dealer.playerScore);
+    if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
+      alert("Player wins");
+      newPlayer.resetPlayer();
+    } else if (dealer.playerScore === newPlayer.playerScore) {
+     alert("Push");
+    } else {
+     alert("Dealer wins");
+    }
+    }
 
 });
 
