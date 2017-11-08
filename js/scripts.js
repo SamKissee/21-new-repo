@@ -179,6 +179,11 @@ $(function() {
       players[thisID].scoreCalc();
       $(this).parent().siblings('.score-box').text(players[thisID].playerScore);
       if (players[thisID].bust === true) {
+        busted++;
+        if (hits + busted === players.length){
+          compare();
+        };
+        console.log(busted);
         // players[thisID].resetPlayer();
         // alert("BUST!");
         $(this).parent().hide();
@@ -190,17 +195,21 @@ $(function() {
     $(".btn-dark").click(function() {
       hits++;
       console.log(hits);
-      if (hits === players.length){
-        var dealerScore = dealer.scoreCalc();
-        players.forEach(function(player) {
-        var playerScore = player.scoreCalc();
-      });
-      dealer.artificialIntel();
-      $('#dealer-score').text(dealer.playerScore);
-      winner();
+      if (hits + busted === players.length){
+        compare();
       };
     });
   });
+
+  function compare() {
+      var dealerScore = dealer.scoreCalc();
+      players.forEach(function(player) {
+        var playerScore = player.scoreCalc();
+      });
+    dealer.artificialIntel();
+    $('#dealer-score').text(dealer.playerScore);
+    winner();
+  }
 
   //Dealer card images with hidden card
   function getDealerImgs() {
@@ -230,18 +239,23 @@ $(function() {
   //Decide winner
   function winner() {
     getDealerImgs();
+    players.forEach(function(player){
+      if (dealer.bust === true || dealer.playerScore < player.playerScore) {
+        $("#" + player.id + "").addClass('win');
+        player.resetPlayer();
+      } else if (dealer.playerScore === player.playerScore) {
+        $("#" + player.id + "").addClass('push');
+      } else {
+        $("#" + player.id + "").addClass('lost');
+      }
+      player.resetPlayer();
+      $('#hit' + player.id + ', #hold' + player.id + '').hide();
+    })
     $(".hidden").hide();
-    $('#hit, #hold').hide();
+
     $('#deal').show()
-    if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
-      alert("Player wins");
-      newPlayer.resetPlayer();
-    } else if (dealer.playerScore === newPlayer.playerScore) {
-      alert("Push");
-    } else {
-      alert("Dealer wins");
-    }
-    newPlayer.resetPlayer();
+
+
     dealer.resetPlayer();
   }
 });
