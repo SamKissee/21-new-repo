@@ -40,7 +40,7 @@ function Player( type, hand, hold, bust, score) {
 Player.prototype.playerHtml = function(){
   return `<div class="player" id="` + this.id + `">
     <h3>Player ` + this.id + `</h3>
-    <div id="p` + this.id + `-score"></div>
+    <div class="score-box" id="p` + this.id + `-score"></div>
     <div id="player` + this.id + `" class="game-table"></div>
     <div class="buttons">
       <button type="button" id="hit` + this.id + `" class="btn btn-danger" style="display:none;">Hit</button>
@@ -133,7 +133,8 @@ Player.prototype.artificialIntel = function() {
 
 $(function() {
   var players = [];
-
+  var hits = 0;
+  var busted = 0;
   var dealer = new Player("Dealer", [], false, false, 0);
 
   $('#number-form').submit(function(event){
@@ -148,7 +149,8 @@ $(function() {
       console.log(html);
       $('.players').append(html);
     }
-    console.log(players);
+    $('.deal-btn').show();
+    $(this).hide();
 
   });
 
@@ -167,34 +169,37 @@ $(function() {
 
       $('.buttons button').show();
     });
-//hit button
+
+    //hit button
     $('.btn-danger').click(function() {
       var thisID = parseInt($(this).parent().parent().attr("id")) - 1;
 
       players[thisID].deal(1);
       getPlayerImgs();
       players[thisID].scoreCalc();
-      $('#p1-score').text(players[thisID].playerScore);
+      $(this).parent().siblings('.score-box').text(players[thisID].playerScore);
       if (players[thisID].bust === true) {
-        players[thisID].resetPlayer();
-        dealer.resetPlayer();
-        alert("BUST!");
-        $('#hit, #hold').hide();
-        $('#deal').show()
+        // players[thisID].resetPlayer();
+        // alert("BUST!");
+        $(this).parent().hide();
+        $(this).parents('.player').addClass('busted');
+        // $('#deal').show()
       };
     });
-  });
 
-
-
-
-  //Hold button
-  $("#hold").click(function() {
-    var dealerScore = dealer.scoreCalc();
-    var playerScore = newPlayer.scoreCalc();
-    dealer.artificialIntel();
-    $('#dealer-score').text(dealer.playerScore);
-    winner();
+    $(".btn-dark").click(function() {
+      hits++;
+      console.log(hits);
+      if (hits === players.length){
+        var dealerScore = dealer.scoreCalc();
+        players.forEach(function(player) {
+        var playerScore = player.scoreCalc();
+      });
+      dealer.artificialIntel();
+      $('#dealer-score').text(dealer.playerScore);
+      winner();
+      };
+    });
   });
 
   //Dealer card images with hidden card
