@@ -42,14 +42,46 @@ Player.prototype.resetPlayer = function() {
 
 Player.prototype.scoreCalc = function() {
   var score = 0;
+  var hasAce = false;
   for (var i = 0; i < this.playerHand.length; i++) {
     score += this.playerHand[i].value;
+	  //check to see if there is at least one ace in the hand
+    if (this.playerHand[i].value === 11) {
+      hasAce = true;
+    }
+  }
+	//if there is an ace and the score is currently over 21, run the scoreMod function
+  if (hasAce === true && score > 21) {
+    score = this.scoreMod(score);
+    this.playerScore = score;
+  } else {
+	  // if not, keep the ace value at 11 and move on as usual
+    this.playerScore = score;
   }
   if (score > 21) {
     this.bust = true;
   }
-  this.playerScore = score;
-  return score;
+}
+
+Player.prototype.scoreMod = function(oldScore){
+	//create a new variable to hold the modified total score value (starting at the old value)
+  var newScore = oldScore;
+  numAces = 0;
+	//count the number of aces in the hand
+  this.playerHand.forEach(function(card){
+    if (card.value === 11) {
+      numAces++;
+    }
+  });
+  var i = 0;
+	//minus 10 from new score for each ace in the hand until the score is no longer over 21 or there are no more aces to account for.
+	//this keeps the highest possible score while not going over at least until all aces are a value of 1.
+  while (newScore > 21 && i < numAces) {
+    newScore -= 10;
+    i++;
+  }
+	//return the new modified score, if it is still above 21, the rest of the scoreCalc function will report a bust.
+  return newScore;
 }
 
 Player.prototype.deal = function(x) {
@@ -81,15 +113,20 @@ $(function() {
 
   $('#deal').click(function() {
     newPlayer.deal(2);
+    console.log(newPlayer.playerHand);
     dealer.deal(2);
     newPlayer.scoreCalc();
+    console.log(newPlayer.playerScore);
+
     getPlayerImgs();
     getDealerImgs();
 
   });
   $('#hit').click(function() {
     newPlayer.deal(1);
+    console.log(newPlayer.playerHand);
     newPlayer.scoreCalc();
+    console.log(newPlayer.playerScore);
     if (newPlayer.bust === true) {
       alert("BUST!");
       newPlayer.resetPlayer();
