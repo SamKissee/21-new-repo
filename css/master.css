@@ -4,6 +4,7 @@
 
 .player h3 {
     text-align: center;
+    margin-top: 31px;
 }
 
 .game-table img {
@@ -59,6 +60,7 @@ body {
 .players {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .player {
@@ -67,7 +69,7 @@ body {
     border-radius: 50px;
     background: rgba(0, 0, 0, 0.39);
     box-shadow: 0px 12px #470000;
-    margin: 0 15px;
+    margin: 0 15px 30px;
     position: relative;
     text-align: center;
     min-width: 270px;
@@ -84,10 +86,10 @@ body {
     top: 0;
     background: #300000;
     padding: 8px;
-    left: 44%;
+    left: 42%;
     border-bottom-left-radius: 50%;
     border-bottom-right-radius: 50%;
-    font-size: 18px;
+    font-size: 33px;
 }
 
 .buttons {
@@ -121,8 +123,31 @@ div#dealer-score {
     background: rgba(255, 0, 0, 0.38);
 }
 
+.win {
+    background: rgba(0, 128, 0, 0.51);
+}
+
+.lost {
+    background: rgba(255, 0, 0, 0.43);
+}
+
 .busted:after {
     content: "BUSTED!";
+}
+
+.win:after {
+    content: "WINNER!";
+}
+
+.lost:after {
+    content: "DEALER WIN";
+}
+
+.push:after {
+    content: "PUSH";
+}
+
+.busted:after, .lost:after, .win:after, .push:after {
     position: absolute;
     top: 0;
     bottom: 0;

@@ -133,7 +133,7 @@ Player.prototype.artificialIntel = function() {
 
 $(function() {
   var players = [];
-  var hits = 0;
+  var holds = 0;
   var busted = 0;
   var dealer = new Player("Dealer", [], false, false, 0);
 
@@ -146,7 +146,6 @@ $(function() {
       players.push(newPlayer);
       players[i].id = i + 1;
       var html = players[i].playerHtml();
-      console.log(html);
       $('.players').append(html);
     }
     $('.deal-btn').show();
@@ -155,7 +154,20 @@ $(function() {
   });
 
   //deal button
-  $('#deal').click(function() {
+  $('#deal').off("click").on('click', function() {
+
+    $('.player').removeClass("win");
+    $('.player').removeClass("lost");
+    $('.player').removeClass("busted");
+    $('.player').removeClass("push");
+    getDealerImgs();
+    players.forEach(function(player) {
+      $(".buttons").show();
+      console.log(player);
+      getPlayerImgs();
+    });
+    // players.forEach(function(player) {
+    // });
     dealer.deal(2);
     getDealerImgs();
     $('#dealer-score').text(dealer.playerHand[0].value + " - ???");
@@ -171,7 +183,7 @@ $(function() {
     });
 
     //hit button
-    $('.btn-danger').click(function() {
+    $('.btn-danger').off("click").on('click', function() {
       var thisID = parseInt($(this).parent().parent().attr("id")) - 1;
 
       players[thisID].deal(1);
@@ -180,7 +192,7 @@ $(function() {
       $(this).parent().siblings('.score-box').text(players[thisID].playerScore);
       if (players[thisID].bust === true) {
         busted++;
-        if (hits + busted === players.length){
+        if (holds + busted === players.length){
           compare();
         };
         console.log(busted);
@@ -191,14 +203,21 @@ $(function() {
         // $('#deal').show()
       };
     });
-
-    $(".btn-dark").click(function() {
-      hits++;
-      console.log(hits);
-      if (hits + busted === players.length){
+// hold button
+    $(".btn-dark").off("click").on('click', function() {
+      holds++;
+      console.log(holds);
+      if (holds + busted === players.length){
         compare();
       };
+      $(this).parent().hide();
     });
+
+
+    // $('button').off("click").on('click', function(){
+    //   console.log(players);
+    //   console.log(dealer);
+    // });
   });
 
   function compare() {
@@ -240,7 +259,7 @@ $(function() {
   function winner() {
     getDealerImgs();
     players.forEach(function(player){
-      if (dealer.bust === true || dealer.playerScore < player.playerScore) {
+      if ((dealer.bust === true || dealer.playerScore < player.playerScore) && player.bust === false) {
         $("#" + player.id + "").addClass('win');
         player.resetPlayer();
       } else if (dealer.playerScore === player.playerScore) {
@@ -248,16 +267,17 @@ $(function() {
       } else {
         $("#" + player.id + "").addClass('lost');
       }
+      $('#hit' + player.id + ', #hold' + player.id + '').parent().hide();
       player.resetPlayer();
-      $('#hit' + player.id + ', #hold' + player.id + '').hide();
     })
     $(".hidden").hide();
 
     $('#deal').show()
-
-
+    holds = 0;
+    busted = 0;
     dealer.resetPlayer();
   }
+
 });
 
 
