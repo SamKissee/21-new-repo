@@ -123,6 +123,13 @@ $(function() {
 
   var dealer = new Player("Dealer", [], false, false, 0);
   var newPlayer = new Player("Player", [], false, false, 0);
+  var players = [];
+
+  var howMany = parseInt($('#how-many').val());
+  for (var i = 0; i < howMany; i++) {
+    players.push(newPlayer)
+    players[i].id = i;
+  }
 
   //deal button
   $('#deal').click(function() {
@@ -206,12 +213,3 @@ $(function() {
 
 
 //-----------------HELPER FUNCTIONS---------------------
-
-
-
-// var players = [];
-// var howMany = parseInt($('#how-many').val());
-// for (var i = 0; i < howMany; i++) {
-//   players.push(newPlayer)
-//   players[i].id = i;
-// }
