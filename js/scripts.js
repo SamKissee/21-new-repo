@@ -1,8 +1,6 @@
 var masterDeck = []
 resetDeck();
-
-
-
+//Reset Deck
 function resetDeck() {
   function Cards(value, face, suit) {
     this.value = value;
@@ -10,6 +8,7 @@ function resetDeck() {
     this.suit = suit;
     this.image = face + suit + ".png";
   }
+  // Create Deck
   var suits = ["hearts", "spades", "diamonds", "clubs"]
   suits.forEach(function(suit) {
     for (var i = 2; i <= 11; i++) {
@@ -24,7 +23,7 @@ function resetDeck() {
     }
   });
 }
-
+//Player Object
 function Player(type, hand, hold, bust, score) {
   this.id = 0;
   this.bust = bust;
@@ -33,38 +32,46 @@ function Player(type, hand, hold, bust, score) {
   this.playerHand = hand;
   this.playerScore = score;
 }
-
+// Reset Player
 Player.prototype.resetPlayer = function() {
   this.playerHand = [];
   this.playerScore = 0;
   this.bust = false;
 }
-
+//Score Calculation
 Player.prototype.scoreCalc = function() {
   var score = 0;
   for (var i = 0; i < this.playerHand.length; i++) {
     score += this.playerHand[i].value;
+    if (this.playerHand[i].face === "11" && this.playerScore >= 11) {
+      this.playerHand[i].value = 1;
+    } else {
+      this.playerHand[i].value = 11;
+    }
   }
+  // if (x === 2 && i === 1){
+  //   console.log(this.playerHand[1].face);
+  //   console.log(this.playerHand[1]);
+  this.playerScore = score;
   if (score > 21) {
     this.bust = true;
   }
-  this.playerScore = score;
   return score;
 }
-
+// Deal Function
 Player.prototype.deal = function(x) {
   for (var i = 0; i < x; i++) {
     var randomCard = Math.floor(Math.random() * masterDeck.length);
-    var popped = masterDeck[randomCard];
-    masterDeck.splice(randomCard, 1);
+    // var randomCard = 12;
+    var popped = masterDeck[12];
+    // masterDeck.splice(randomCard, 1);
     this.playerHand.push(popped);
   }
   this.scoreCalc();
 }
-
+// Dealer AI Function
 Player.prototype.artificialIntel = function() {
-
-  while (this.playerScore < 17) {
+  while (this.playerScore <= 17) {
     this.deal(1);
     if (this.playerScore > 21) {
       this.bust = true;
@@ -73,32 +80,40 @@ Player.prototype.artificialIntel = function() {
     }
   }
 }
-
+//Front End
 $(function() {
-
   var dealer = new Player("Dealer", [], false, false, 0);
   var newPlayer = new Player("Player", [], false, false, 0);
-
+  // Deal Button Function
   $('#deal').click(function() {
     newPlayer.deal(2);
     dealer.deal(2);
     newPlayer.scoreCalc();
     getPlayerImgs();
     getDealerImgs();
-
+    $('#hit, #hold').show();
+    $(this).hide();
+    $('#score').text(newPlayer.playerScore);
   });
+  // Hit Button Functions
   $('#hit').click(function() {
+
     newPlayer.deal(1);
-    newPlayer.scoreCalc();
-    if (newPlayer.bust === true) {
-      alert("BUST!");
+
+    getPlayerImgs();
+    if (newPlayer.playerScore > 21) {
+      newPlayer.bust = true;
+      alert("BUST! Dealer Wins...");
       newPlayer.resetPlayer();
       dealer.resetPlayer();
-      $('.game-table').text('');
+      // $('.game-table').text('');
+      $('#hit, #hold').hide();
+      $('#deal').show();
     };
-    getPlayerImgs();
+    newPlayer.scoreCalc();
+    $('#score').text(newPlayer.playerScore);
   });
-
+  // Dealer Image Functions
   function getDealerImgs() {
     var images = "";
     for (var i = 0; i < dealer.playerHand.length; i++) {
@@ -109,26 +124,28 @@ $(function() {
       }
     }
     $("#dealer").html(images);
-
-  }
-
+  };
+  // Player Image Function
   function getPlayerImgs() {
     var images = ""
     newPlayer.playerHand.forEach(function(card) {
       images += "<img src='img/" + card.image + "'>";
     });
     $("#player1").html(images);
-  }
+  };
+  // Hold Button
   $("#hold").click(function() {
     var dealerScore = dealer.scoreCalc();
     var playerScore = newPlayer.scoreCalc();
     dealer.artificialIntel();
     winner();
   });
-
+  // Winner Functions
   function winner() {
     getDealerImgs();
     $(".hidden").hide();
+    $('#hit, #hold').hide();
+    $('#deal').show();
     if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
       alert("Player wins");
       newPlayer.resetPlayer();

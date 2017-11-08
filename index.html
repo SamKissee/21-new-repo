@@ -10,23 +10,24 @@
   </head>
   <body>
     <div class="container">
-      <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
+
+      <div class="dealer">
           <h2>Dealer</h2>
-          <div id="dealer" class="game-table">
-          </div>
-        </div>
-        <div class="col-md-4"></div>
+          <div id="dealer" class="game-table"></div>
       </div>
-      <div class="row">
-        <h3>Player</h3>
-        <div id="player1" class="game-table">
-        </div>
+      <div class="deal-btn">
         <button type="button" id="deal">Deal</button>
-        <button type="button" id="hit">Hit</button>
-        <button type="button" id="hold">Hold</button>
       </div>
+      <div class="player">
+        <h3>Player</h3>
+        <span id="score"></span>
+        <div id="player1" class="game-table"></div>
+        <div class="buttons">
+          <button type="button" id="hit" style="display:none;">Hit</button>
+          <button type="button" id="hold" style="display:none;">Hold</button>
+        </div>
+      </div>
+
     </div>
   </body>
 </html>
