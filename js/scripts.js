@@ -28,20 +28,27 @@ function resetDeck() {
 }
 
 //Player/Dealer Object
-function Player( type, hand, hold, bust, score) {
+function Player( type, hand, hold, bust, score, bet) {
   this.id = 0;
   this.bust = bust;
   this.hold = hold;
   this.playerType = type;
   this.playerHand = hand;
   this.playerScore = score;
+  this.bet = bet;
 }
 
 Player.prototype.playerHtml = function(){
-  return `<div class="player" id="` + this.id + `">
+  return `<div class="player" id="` + this.id + `" value="` + this.id +`">
     <h3>Player ` + this.id + `</h3>
     <div id="p` + this.id + `-score"></div>
     <div id="player` + this.id + `" class="game-table"></div>
+    <div id="betting">
+    <h5>PICK YOUR BET</h5>
+    <button type="button" class="btn btn-warning bets" value="5">$5</button>
+    <button type="button" class="btn btn-warning bets" value="10">$10</button>
+    <button type="button" class="btn btn-warning bets" value="25">$25</button>
+    </div>
     <div class="buttons">
       <button type="button" id="hit` + this.id + `" class="btn btn-danger" style="display:none;">Hit</button>
       <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
@@ -141,16 +148,38 @@ $(function() {
     event.preventDefault();
     var howMany = $('#how-many').val();
     for (var i = 0; i < howMany; i++) {
-      var newPlayer = new Player( "Player", [], false, false, 0);
+      var newPlayer = new Player( "Player", [], false, false, 0, 0);
       players.push(newPlayer);
       players[i].id = i + 1;
       var html = players[i].playerHtml();
-      console.log(html);
+      // console.log(html);
       $('.players').append(html);
     }
     console.log(players);
-
+    $(".bets").show()
   });
+
+  var betsPlaced = 0;
+  $(".players").on("click", "button.bets",function() {
+    var bet = parseInt($(this).val());
+    var index = parseInt($(this).parents('.player').attr('id')) - 1;
+    players[index].bet = bet;
+    betsPlaced++;
+    $(this).parent().hide();
+    if (betsPlaced === players.length) {
+      $("#deal").show();
+    }
+
+    // $("#deal").show();
+
+    console.log(players);
+
+    // for (var i = 0; i < players.length; i++){
+    //   var bet = parseInt($(this).val());
+    //   players[i].bet = bet;
+    //   console.log(players[i]);
+    // }
+  });//click end
 
   //deal button
   $('#deal').click(function() {

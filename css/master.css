@@ -1,3 +1,7 @@
+.bets {
+  display: none;
+}
+
 .game-table{
     position: relative;
 }
