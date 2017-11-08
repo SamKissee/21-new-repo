@@ -36,6 +36,11 @@ function Player( type, hand, hold, bust, score, bet) {
   this.playerHand = hand;
   this.playerScore = score;
   this.bet = bet;
+  this.wallet = 100;
+}
+
+Player.prototype.wallet = function(credit) {
+  return
 }
 
 Player.prototype.playerHtml = function(){
@@ -140,7 +145,7 @@ Player.prototype.artificialIntel = function() {
 
 $(function() {
   var players = [];
-
+  var betsPlaced = 0;
   var dealer = new Player("Dealer", [], false, false, 0);
 
   $('#number-form').submit(function(event){
@@ -159,26 +164,19 @@ $(function() {
     $(".bets").show()
   });
 
-  var betsPlaced = 0;
   $(".players").on("click", "button.bets",function() {
     var bet = parseInt($(this).val());
     var index = parseInt($(this).parents('.player').attr('id')) - 1;
     players[index].bet = bet;
+    players[index].wallet = players[index].wallet - players[index].bet;
     betsPlaced++;
     $(this).parent().hide();
     if (betsPlaced === players.length) {
       $("#deal").show();
     }
 
-    // $("#deal").show();
-
     console.log(players);
 
-    // for (var i = 0; i < players.length; i++){
-    //   var bet = parseInt($(this).val());
-    //   players[i].bet = bet;
-    //   console.log(players[i]);
-    // }
   });//click end
 
   //deal button
