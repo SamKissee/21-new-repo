@@ -28,13 +28,25 @@ function resetDeck() {
 }
 
 //Player/Dealer Object
-function Player(type, hand, hold, bust, score) {
+function Player( type, hand, hold, bust, score) {
   this.id = 0;
   this.bust = bust;
   this.hold = hold;
   this.playerType = type;
   this.playerHand = hand;
   this.playerScore = score;
+}
+
+Player.prototype.playerHtml = function(){
+  return `<div class="player" id="` + this.id + `">
+    <h3>Player ` + this.id + `</h3>
+    <div id="p` + this.id + `-score"></div>
+    <div id="player` + this.id + `" class="game-table"></div>
+    <div class="buttons">
+      <button type="button" id="hit` + this.id + `" class="btn btn-danger" style="display:none;">Hit</button>
+      <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
+    </div>
+  </div>`
 }
 
 //reset players hand
@@ -120,45 +132,61 @@ Player.prototype.artificialIntel = function() {
 //---------------FRONT END LOGIC----------------------
 
 $(function() {
-
-  var dealer = new Player("Dealer", [], false, false, 0);
-  var newPlayer = new Player("Player", [], false, false, 0);
   var players = [];
 
-  var howMany = parseInt($('#how-many').val());
-  for (var i = 0; i < howMany; i++) {
-    players.push(newPlayer)
-    players[i].id = i;
-  }
+  var dealer = new Player("Dealer", [], false, false, 0);
+
+  $('#number-form').submit(function(event){
+
+    event.preventDefault();
+    var howMany = $('#how-many').val();
+    for (var i = 0; i < howMany; i++) {
+      var newPlayer = new Player( "Player", [], false, false, 0);
+      players.push(newPlayer);
+      players[i].id = i + 1;
+      var html = players[i].playerHtml();
+      console.log(html);
+      $('.players').append(html);
+    }
+    console.log(players);
+
+  });
 
   //deal button
   $('#deal').click(function() {
-    newPlayer.deal(2);
     dealer.deal(2);
-    newPlayer.scoreCalc();
-    $('#p1-score').text(newPlayer.playerScore);
-    $('#dealer-score').text(dealer.playerHand[0].value + " - ???");
-    getPlayerImgs();
     getDealerImgs();
+    $('#dealer-score').text(dealer.playerHand[0].value + " - ???");
+    $(this).hide();
 
-    $('#hit, #hold').show();
-    $(this).hide()
+    players.forEach(function(player){
+      player.deal(2);
+      player.scoreCalc();
+      $('#p' + player.id + '-score').text(player.playerScore);
+      getPlayerImgs();
+
+      $('.buttons button').show();
+    });
+//hit button
+    $('.btn-danger').click(function() {
+      var thisID = parseInt($(this).parent().parent().attr("id")) - 1;
+
+      players[thisID].deal(1);
+      getPlayerImgs();
+      players[thisID].scoreCalc();
+      $('#p1-score').text(players[thisID].playerScore);
+      if (players[thisID].bust === true) {
+        players[thisID].resetPlayer();
+        dealer.resetPlayer();
+        alert("BUST!");
+        $('#hit, #hold').hide();
+        $('#deal').show()
+      };
+    });
   });
 
-  //hit button
-  $('#hit').click(function() {
-    newPlayer.deal(1);
-    getPlayerImgs();
-    newPlayer.scoreCalc();
-    $('#p1-score').text(newPlayer.playerScore);
-    if (newPlayer.bust === true) {
-      newPlayer.resetPlayer();
-      dealer.resetPlayer();
-      alert("BUST!");
-      $('#hit, #hold').hide();
-      $('#deal').show()
-    };
-  });
+
+
 
   //Hold button
   $("#hold").click(function() {
@@ -185,11 +213,13 @@ $(function() {
 
   //Player card images
   function getPlayerImgs() {
-    var images = ""
-    newPlayer.playerHand.forEach(function(card) {
-      images += "<img src='img/" + card.image + "'>";
+    players.forEach(function(player){
+      var images = ""
+      player.playerHand.forEach(function(card) {
+        images += "<img src='img/" + card.image + "'>";
+      });
+      $("#player" + player.id + "").html(images);
     });
-    $("#player1").html(images);
   }
 
   //Decide winner
