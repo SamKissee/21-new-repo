@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Ruslan+Display" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/master.css">
     <script src="js/jquery-3.2.1.js"></script>
@@ -10,22 +11,25 @@
   </head>
   <body>
     <div class="container">
-      <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
+
+      <div class="dealer">
           <h2>Dealer</h2>
-          <div id="dealer" class="game-table">
+          <div id="dealer-score"></div>
+          <div id="dealer" class="game-table"></div>
+      </div>
+      <div class="deal-btn">
+        <button type="button" class="btn btn-warning" id="deal">Deal</button>
+      </div>
+      <div class="players">
+        <div class="player">
+          <h3>Player</h3>
+          <div id="p1-score"></div>
+          <div id="player1" class="game-table"></div>
+          <div class="buttons">
+            <button type="button" id="hit" class="btn btn-danger" style="display:none;">Hit</button>
+            <button type="button" id="hold" class="btn btn-dark" style="display:none;">Hold</button>
           </div>
         </div>
-        <div class="col-md-4"></div>
-      </div>
-      <div class="row">
-        <h3>Player</h3>
-        <div id="player1" class="game-table">
-        </div>
-        <button type="button" id="deal">Deal</button>
-        <button type="button" id="hit">Hit</button>
-        <button type="button" id="hold">Hold</button>
       </div>
     </div>
   </body>

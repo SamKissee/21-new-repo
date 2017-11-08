@@ -2,6 +2,10 @@
     position: relative;
 }
 
+.player h3 {
+    text-align: center;
+}
+
 .game-table img {
     width: 130px;
 }
@@ -15,4 +19,88 @@ img.hidden {
     left: 130px;
     bottom: 0;
     top: 0;
+}
+
+.dealer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 232px;
+    padding: 25px 50px 50px;
+    border: 3px solid #300000;
+    border-bottom-left-radius: 100%;
+    border-bottom-right-radius: 100%;
+    margin-bottom: 30px;
+    background: rgba(0, 0, 0, 0.39);
+    box-shadow: inset 0px -12px #470000;
+    position: relative;
+}
+
+button#deal {
+    display: block;
+    margin: 25px auto;
+}
+
+body {
+    background: #024402 url(../img/bg.jpg);
+    color: #eadd0c;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    font-family: 'Ruslan Display', cursive;
+}
+
+.players {
+    display: flex;
+    justify-content: space-around;
+}
+
+.player {
+    padding: 45px;
+    border: 3px solid #300000;
+    border-radius: 50px;
+    background: rgba(0, 0, 0, 0.39);
+    box-shadow: 0px 12px #470000;
+    margin: 0 15px;
+    position: relative;
+    text-align: center;
+}
+
+div#p1-score {
+    position: absolute;
+    top: 0;
+    background: #300000;
+    padding: 8px;
+    left: 44%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    font-size: 18px;
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.deal-btn {
+    background: #470000;
+    padding: 12px;
+    margin-bottom: 33px;
+    border-radius: 100%;
+}
+
+.deal-btn .btn {
+    font-size: 40px;
+    cursor: pointer;
+}
+
+div#dealer-score {
+    position: absolute;
+    bottom: 0;
+    background: #470000;
+    padding: 10px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    font-size: 1.2em;
 }

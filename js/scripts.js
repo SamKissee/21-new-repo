@@ -1,9 +1,11 @@
-var masterDeck = []
+//----------------BACK END LOGIC------------------
+var masterDeck;
 resetDeck();
 
-
-
+//create and reset deck of cards
 function resetDeck() {
+  masterDeck = [];
+
   function Cards(value, face, suit) {
     this.value = value;
     this.face = face;
@@ -25,6 +27,7 @@ function resetDeck() {
   });
 }
 
+//Player/Dealer Object
 function Player(type, hand, hold, bust, score) {
   this.id = 0;
   this.bust = bust;
@@ -34,28 +37,32 @@ function Player(type, hand, hold, bust, score) {
   this.playerScore = score;
 }
 
+//reset players hand
 Player.prototype.resetPlayer = function() {
   this.playerHand = [];
   this.playerScore = 0;
   this.bust = false;
+  this.hold = false
+  resetDeck();
 }
 
+//calculate Score and detect aces
 Player.prototype.scoreCalc = function() {
   var score = 0;
   var hasAce = false;
   for (var i = 0; i < this.playerHand.length; i++) {
     score += this.playerHand[i].value;
-	  //check to see if there is at least one ace in the hand
+    //check to see if there is at least one ace in the hand
     if (this.playerHand[i].value === 11) {
       hasAce = true;
     }
   }
-	//if there is an ace and the score is currently over 21, run the scoreMod function
+  //if there is an ace and the score is currently over 21, run the scoreMod function
   if (hasAce === true && score > 21) {
     score = this.scoreMod(score);
     this.playerScore = score;
   } else {
-	  // if not, keep the ace value at 11 and move on as usual
+    // if not, keep the ace value at 11 and move on as usual
     this.playerScore = score;
   }
   if (score > 21) {
@@ -63,27 +70,29 @@ Player.prototype.scoreCalc = function() {
   }
 }
 
-Player.prototype.scoreMod = function(oldScore){
-	//create a new variable to hold the modified total score value (starting at the old value)
+//calculate new score if aces value need to be changed
+Player.prototype.scoreMod = function(oldScore) {
+  //create a new variable to hold the modified total score value (starting at the old value)
   var newScore = oldScore;
-  numAces = 0;
-	//count the number of aces in the hand
-  this.playerHand.forEach(function(card){
+  var numAces = 0;
+  //count the number of aces in the hand
+  this.playerHand.forEach(function(card) {
     if (card.value === 11) {
       numAces++;
     }
   });
   var i = 0;
-	//minus 10 from new score for each ace in the hand until the score is no longer over 21 or there are no more aces to account for.
-	//this keeps the highest possible score while not going over at least until all aces are a value of 1.
+  //minus 10 from new score for each ace in the hand until the score is no longer over 21 or there are no more aces to account for.
+  //this keeps the highest possible score while not going over at least until all aces are a value of 1.
   while (newScore > 21 && i < numAces) {
     newScore -= 10;
     i++;
   }
-	//return the new modified score, if it is still above 21, the rest of the scoreCalc function will report a bust.
+  //return the new modified score, if it is still above 21, the rest of the scoreCalc function will report a bust.
   return newScore;
 }
 
+//deal cards to players and call score calculate
 Player.prototype.deal = function(x) {
   for (var i = 0; i < x; i++) {
     var randomCard = Math.floor(Math.random() * masterDeck.length);
@@ -94,6 +103,7 @@ Player.prototype.deal = function(x) {
   this.scoreCalc();
 }
 
+//AI which runs after user holds
 Player.prototype.artificialIntel = function() {
 
   while (this.playerScore < 17) {
@@ -106,36 +116,53 @@ Player.prototype.artificialIntel = function() {
   }
 }
 
+
+//---------------FRONT END LOGIC----------------------
+
 $(function() {
 
   var dealer = new Player("Dealer", [], false, false, 0);
   var newPlayer = new Player("Player", [], false, false, 0);
 
+  //deal button
   $('#deal').click(function() {
     newPlayer.deal(2);
-    console.log(newPlayer.playerHand);
     dealer.deal(2);
     newPlayer.scoreCalc();
-    console.log(newPlayer.playerScore);
-
+    $('#p1-score').text(newPlayer.playerScore);
+    $('#dealer-score').text(dealer.playerScore)
     getPlayerImgs();
     getDealerImgs();
 
-  });
-  $('#hit').click(function() {
-    newPlayer.deal(1);
-    console.log(newPlayer.playerHand);
-    newPlayer.scoreCalc();
-    console.log(newPlayer.playerScore);
-    if (newPlayer.bust === true) {
-      alert("BUST!");
-      newPlayer.resetPlayer();
-      dealer.resetPlayer();
-      $('.game-table').text('');
-    };
-    getPlayerImgs();
+    $('#hit, #hold').show();
+    $(this).hide()
   });
 
+  //hit button
+  $('#hit').click(function() {
+    newPlayer.deal(1);
+    getPlayerImgs();
+    newPlayer.scoreCalc();
+    $('#p1-score').text(newPlayer.playerScore);
+    if (newPlayer.bust === true) {
+      newPlayer.resetPlayer();
+      dealer.resetPlayer();
+      alert("BUST!");
+      $('#hit, #hold').hide();
+      $('#deal').show()
+    };
+  });
+
+  //Hold button
+  $("#hold").click(function() {
+    var dealerScore = dealer.scoreCalc();
+    var playerScore = newPlayer.scoreCalc();
+    dealer.artificialIntel();
+    $('#dealer-score').text(dealer.playerScore);
+    winner();
+  });
+
+  //Dealer card images with hidden card
   function getDealerImgs() {
     var images = "";
     for (var i = 0; i < dealer.playerHand.length; i++) {
@@ -149,6 +176,7 @@ $(function() {
 
   }
 
+  //Player card images
   function getPlayerImgs() {
     var images = ""
     newPlayer.playerHand.forEach(function(card) {
@@ -156,16 +184,13 @@ $(function() {
     });
     $("#player1").html(images);
   }
-  $("#hold").click(function() {
-    var dealerScore = dealer.scoreCalc();
-    var playerScore = newPlayer.scoreCalc();
-    dealer.artificialIntel();
-    winner();
-  });
 
+  //Decide winner
   function winner() {
     getDealerImgs();
     $(".hidden").hide();
+    $('#hit, #hold').hide();
+    $('#deal').show()
     if (dealer.bust === true || dealer.playerScore < newPlayer.playerScore) {
       alert("Player wins");
       newPlayer.resetPlayer();
@@ -178,6 +203,11 @@ $(function() {
     dealer.resetPlayer();
   }
 });
+
+
+//-----------------HELPER FUNCTIONS---------------------
+
+
 
 // var players = [];
 // var howMany = parseInt($('#how-many').val());
