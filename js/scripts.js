@@ -130,7 +130,7 @@ $(function() {
     dealer.deal(2);
     newPlayer.scoreCalc();
     $('#p1-score').text(newPlayer.playerScore);
-    $('#dealer-score').text(dealer.playerScore)
+    $('#dealer-score').text(dealer.playerHand[0].value + " - ???");
     getPlayerImgs();
     getDealerImgs();
 
