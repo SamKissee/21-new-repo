@@ -45,9 +45,9 @@ Player.prototype.playerHtml = function(){
   return `
   <div class="player" id="` + this.id + `">
     <h3>Player ` + this.id + `</h3>
-    <div class="score-box" id="p` + this.id + `-score"></div>
+    <div class="score-box" id="p` + this.id + `-score">0</div>
     <div id="player` + this.id + `" class="game-table"></div>
-    <div id="betting">
+    <div class="betting">
     <h5>PICK YOUR BET</h5>
     <button type="button" class="btn btn-warning bets" value="5">$5</button>
     <button type="button" class="btn btn-warning bets" value="10">$10</button>
@@ -58,8 +58,8 @@ Player.prototype.playerHtml = function(){
       <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
     </div>
 
-    <div class="wallet" id="wallet` + this.id + `"><img src="img/1-chip.png"><span>$` + this.wallet + `</span></div>
-    <div class="bet-ammt"></div>
+    <div class="wallet"><img src="img/1-chip.png"><span id="wallet` + this.id + `">$` + this.wallet + `</span></div>
+    <div class="bet-ammt"><img src="img/chip2.png"><span class="player-bets"></span></div>
 
     <button id="remove` + this.id + `" class="quit btn btn-dark">Leave Game</button>
 
@@ -167,23 +167,22 @@ $(function() {
       var html = players[i].playerHtml();
       $('.players').append(html);
     }
-    $('.deal-btn').show();
     $(this).hide();
 
 
   });
 //bet button ----------------
-  $(".players").off("click").on("click", "button.bets",function() {
+  $(".players").on("click", "button.bets",function() {
     var bet = parseInt($(this).val());
     var index = parseInt($(this).parents('.player').attr('id')) - 1;
     players[index].bet = bet;
     betsPlaced++;
     $(this).parent().hide();
     if (betsPlaced === players.length) {
-      $("#deal").show();
+      $(".deal-btn").show();
     }
-    $(this).parent().siblings('.bet-ammt').text("$" + bet);
-    console.log(players);
+    $(this).parent().siblings('.bet-ammt').children('.player-bets').text("$" + bet);
+    console.log(betsPlaced);
 
   });//click end
   //deal button
@@ -204,7 +203,7 @@ $(function() {
     dealer.deal(2);
     getDealerImgs();
     $('#dealer-score').text(dealer.playerHand[0].value + " - ???");
-    $(this).hide();
+    $(this).parent().hide();
 
     players.forEach(function(player){
       player.deal(2);
@@ -309,12 +308,14 @@ $(function() {
       $('#hit' + player.id + ', #hold' + player.id + '').parent().hide();
       player.resetPlayer();
       $('#wallet' + player.id).text("$" + player.wallet);
+      $('player' + player.id + ' .player-bets').text("0");
     });
+    $('.player-bets').text("0");
+    $('.betting').show().addClass('new-game');
     $(".hidden").hide();
-
-    $('#deal').show()
     holds = 0;
     busted = 0;
+    betsPlaced = 0;
     dealer.resetPlayer();
   }
 

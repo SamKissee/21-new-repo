@@ -75,7 +75,7 @@ body {
     position: relative;
     text-align: center;
     min-width: 270px;
-
+    margin-top: 100px;
 }
 
 .player img {
@@ -172,6 +172,7 @@ form#number-form {
 form#number-form input, #number-form .btn {
     height: 70px;
     font-size: 2em;
+    margin-top: 50px;
 }
 
 input#how-many {
@@ -214,4 +215,60 @@ input#how-many {
     line-height: 1;
     font-size: .5em;
     left: 3px;
+}
+
+.bet-ammt {
+    position: absolute;
+    width: 72px;
+    top: -20px;
+    right: -20px;
+}
+
+span.player-bets {
+    position: absolute;
+    left: 8%;
+    top: 37%;
+    font-size: 35px;
+    text-shadow: 0 0 14px #000, 0 0 14px #000;
+    color: #81ff8d;
+    right: 8%;
+}
+
+span.player-bets:after {
+    content: "Bet";
+    position: absolute;
+    bottom: 68%;
+    left: 6px;
+    font-size: .7em;
+}
+
+.quit {
+    position: absolute;
+    top: 95%;
+    left: 25%;
+    background: #480000;
+    border: none;
+    cursor: pointer;
+}
+
+form#number-form input {
+    width: 450px;
+}
+
+.quit:hover {
+  background-color: red
+}
+
+.betting.new-game h5:after {
+    content: " again";
+}
+
+.betting.new-game {
+    padding: 30px;
+}
+
+.player h3 {
+    background: #000;
+    padding-top: 8px;
+    border-radius: 100%;
 }
