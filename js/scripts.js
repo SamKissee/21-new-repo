@@ -28,15 +28,19 @@ function resetDeck() {
 }
 
 //Player/Dealer Object
-function Player( type, hand, hold, bust, score) {
+function Player( type, hand, hold, bust, score, bet) {
   this.id = 0;
   this.bust = bust;
   this.hold = hold;
   this.playerType = type;
   this.playerHand = hand;
   this.playerScore = score;
+  this.bank = 100;
 }
-
+function Bank(bank, bet){
+  this.bank = 100;
+  this.bet = 0;
+}
 Player.prototype.playerHtml = function(){
   return `<div class="player" id="` + this.id + `">
     <h3>Player ` + this.id + `</h3>
@@ -46,6 +50,14 @@ Player.prototype.playerHtml = function(){
       <button type="button" id="hit` + this.id + `" class="btn btn-danger" style="display:none;">Hit</button>
       <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
     </div>
+    <div id="betting">
+      <h5>PICK YOUR BET</h5>
+      <button type="button" class="btn btn-warning bets" value="5">$5</button>
+      <button type="button" class="btn btn-warning bets" value="10">$10</button>
+      <button type="button" class="btn btn-warning bets" value="25">$25</button>
+    </div>
+    <h4> Your Bank: </h4>
+    <h5> `+ this.bank +`</>
   </div>`
 }
 
@@ -135,25 +147,38 @@ $(function() {
   var players = [];
   var holds = 0;
   var busted = 0;
+  var betsPlaced = 0;
   var dealer = new Player("Dealer", [], false, false, 0);
 
   $('#number-form').submit(function(event){
-
     event.preventDefault();
     var howMany = $('#how-many').val();
     for (var i = 0; i < howMany; i++) {
-      var newPlayer = new Player( "Player", [], false, false, 0);
+      var newPlayer = new Player( "Player", [], false, false, 0, 0);
       players.push(newPlayer);
       players[i].id = i + 1;
       var html = players[i].playerHtml();
+      console.log(players[i].bank);
       $('.players').append(html);
     }
     $('.deal-btn').show();
     $(this).hide();
+    $(".bets").show();
 
   });
 
   //deal button
+  // $(".players").on("click", "bnk-button",function() {
+  // var bet = parseInt($(this).val());
+  //   var index = parseInt($(this).parents('.player').attr('id')) - 1;
+  //   players[index].bet = bet;
+  //   players[index].wallet = players[index].wallet - players[index].bet;
+  //   betsPlaced++;
+  //   $(this).parent().hide();
+  //   if (betsPlaced === players.length) {
+  //     $("#deal").show();
+  //   }
+  // });
   $('#deal').off("click").on('click', function() {
 
     $('.player').removeClass("win");
