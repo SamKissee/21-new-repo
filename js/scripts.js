@@ -58,7 +58,7 @@ Player.prototype.playerHtml = function(){
       <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
     </div>
 
-    <div class="wallet" id="wallet` + this.id + `">$` + this.wallet + `</div>
+    <div class="wallet" id="wallet` + this.id + `"><img src="img/1-chip.png"><span>$` + this.wallet + `</span></div>
     <div class="bet-ammt"></div>
 
     <button id="remove` + this.id + `" class="quit btn btn-dark">Leave Game</button>
@@ -71,8 +71,9 @@ Player.prototype.resetPlayer = function() {
   this.playerHand = [];
   this.playerScore = 0;
   this.bust = false;
-  this.hold = false
+  this.hold = false;
   resetDeck();
+  this.bet = 0;
 }
 
 //calculate Score and detect aces
@@ -176,7 +177,6 @@ $(function() {
     var bet = parseInt($(this).val());
     var index = parseInt($(this).parents('.player').attr('id')) - 1;
     players[index].bet = bet;
-    players[index].wallet = players[index].wallet - players[index].bet;
     betsPlaced++;
     $(this).parent().hide();
     if (betsPlaced === players.length) {
@@ -298,15 +298,18 @@ $(function() {
     players.forEach(function(player){
       if ((dealer.bust === true || dealer.playerScore < player.playerScore) && player.bust === false) {
         $("#" + player.id + "").addClass('win');
+        player.wallet += player.bet;
         player.resetPlayer();
       } else if (dealer.playerScore === player.playerScore) {
         $("#" + player.id + "").addClass('push');
       } else {
         $("#" + player.id + "").addClass('lost');
+        player.wallet -= player.bet
       }
       $('#hit' + player.id + ', #hold' + player.id + '').parent().hide();
       player.resetPlayer();
-    })
+      $('#wallet' + player.id).text("$" + player.wallet);
+    });
     $(".hidden").hide();
 
     $('#deal').show()
