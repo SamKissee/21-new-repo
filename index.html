@@ -15,13 +15,16 @@
 
       <div class="dealer">
           <h2>Dealer</h2>
-          <div id="dealer-score"></div>
+          <div id="dealer-score">0</div>
           <div id="dealer" class="game-table"></div>
       </div>
       <form id="number-form">
-        <input type="number" min="1" max="7" id="how-many" placeholder="How many players?"><button type="submit" class="btn btn-warning">Start Game</button>
+        <input type="number" min="1" max="7" id="how-many" placeholder="How many players?">
+        <div class="form-group" id="names"></div>
+        <button type="submit" class="btn btn-warning">Start Game</button>
+
       </form>
-      <div class="deal-btn" style="display:none;">
+      <div class="deal-btn">
         <button type="button" class="btn btn-warning" id="deal">Deal</button>
       </div>
       <div class="players">

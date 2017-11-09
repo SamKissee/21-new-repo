@@ -44,11 +44,12 @@ function Player( type, hand, hold, bust, score, bet) {
 Player.prototype.playerHtml = function(){
   return `
   <div class="player" id="` + this.id + `">
-    <h3>Player ` + this.id + `</h3>
+    <h3>` + this.playerType + `</h3>
     <div class="score-box" id="p` + this.id + `-score">0</div>
     <div id="player` + this.id + `" class="game-table"></div>
     <div class="betting">
-    <h5>PICK YOUR BET</h5>
+    <h5 class="first">PLACE YOUR BET</h5>
+    <h5 class="again">BET AGAIN</h5>
     <button type="button" class="btn btn-warning bets" value="5">$5</button>
     <button type="button" class="btn btn-warning bets" value="10">$10</button>
     <button type="button" class="btn btn-warning bets" value="25">$25</button>
@@ -156,21 +157,49 @@ $(function() {
   var betsPlaced = 0;
   var dealer = new Player("Dealer", [], false, false, 0);
 
-  $('#number-form').submit(function(event){
-
-    event.preventDefault();
-    var howMany = $('#how-many').val();
-    for (var i = 0; i < howMany; i++) {
-      var newPlayer = new Player( "Player", [], false, false, 0, 0);
-      players.push(newPlayer);
-      players[i].id = i + 1;
-      var html = players[i].playerHtml();
-      $('.players').append(html);
+  $('#how-many').change(function(){
+    var thisMany = $(this).val();
+    var inputs = "";
+    for (var i = 0; i < thisMany; i++) {
+      inputs += "<input type='text' id='p-" + i + "-name' placeholder='Player " + (i + 1)+ "'>";
     }
+    $('#names').html(inputs);
+  })
+
+//---------------Start game----------------
+
+  $('#number-form').submit(function(event){
+    event.preventDefault();
+    $('.dealer').addClass('show');
+    var howMany = $('#how-many').val();
+    var playerNames = [];
+  $("#names input").each(function(){
+    playerNames.push($(this).val());
+  })
+    for (var i = 0; i < howMany; i++) {
+
+      (function(i){
+          setTimeout(function(){
+            var newPlayer = new Player( playerNames[i], [], false, false, 0, 0);
+            players.push(newPlayer);
+            players[i].id = i + 1;
+            var html = players[i].playerHtml();
+            // $('.players').append(html);
+            $('.players').append(html).delay(10).queue(function(next){
+              $('.player').addClass('show');
+              next();
+            });
+          }, 200 * i);
+        }(i));
+    }
+
+    $('.player').delay(500).queue(function(next){
+      $(this).addClass('show');
+      next();
+    });
     $(this).hide();
-
-
   });
+
 //bet button ----------------
   $(".players").on("click", "button.bets",function() {
     var bet = parseInt($(this).val());
@@ -179,7 +208,7 @@ $(function() {
     betsPlaced++;
     $(this).parent().hide();
     if (betsPlaced === players.length) {
-      $(".deal-btn").show();
+      $(".deal-btn").addClass('show');
     }
     $(this).parent().siblings('.bet-ammt').children('.player-bets').text("$" + bet);
     console.log(betsPlaced);
@@ -198,19 +227,17 @@ $(function() {
       console.log(player);
       getPlayerImgs();
     });
-    // players.forEach(function(player) {
-    // });
+
     dealer.deal(2);
     getDealerImgs();
     $('#dealer-score').text(dealer.playerHand[0].value + " - ???");
-    $(this).parent().hide();
+    $(this).parent().removeClass('show');
 
     players.forEach(function(player){
       player.deal(2);
       player.scoreCalc();
       $('#p' + player.id + '-score').text(player.playerScore);
       getPlayerImgs();
-
       $('.buttons button').show();
     });
 
@@ -228,11 +255,8 @@ $(function() {
           compare();
         };
         console.log(busted);
-        // players[thisID].resetPlayer();
-        // alert("BUST!");
         $(this).parent().hide();
         $(this).parents('.player').addClass('busted');
-        // $('#deal').show()
       };
     });
 // hold button
@@ -248,12 +272,18 @@ $(function() {
     $('.quit').off("click").on("click", function(){
       var removeThis = parseInt($(this).parent().attr('id')) - 1;
       players.splice(removeThis, 1);
-      $(this).parent().hide();
+
+      $(this).parent().remove();
+
+      for (var i = 0; i < players.length; i++) {
+        players[i].id = i;
+      }
+      var x = 1;
+      $('.player').each(function(){
+        $(this).attr("id", x);
+        x++;
+      });
     });
-    // $('button').off("click").on('click', function(){
-    //   console.log(players);
-    //   console.log(dealer);
-    // });
   });
 
   function compare() {
@@ -299,7 +329,7 @@ $(function() {
         $("#" + player.id + "").addClass('win');
         player.wallet += player.bet;
         player.resetPlayer();
-      } else if (dealer.playerScore === player.playerScore) {
+      } else if (dealer.playerScore === player.playerScore && player.bust === false) {
         $("#" + player.id + "").addClass('push');
       } else {
         $("#" + player.id + "").addClass('lost');
@@ -318,8 +348,4 @@ $(function() {
     betsPlaced = 0;
     dealer.resetPlayer();
   }
-
 });
-
-
-//-----------------HELPER FUNCTIONS---------------------

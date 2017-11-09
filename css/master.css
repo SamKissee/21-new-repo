@@ -32,17 +32,17 @@ img.hidden {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    min-height: 232px;
-    padding: 25px 50px 50px;
     border: 3px solid #300000;
     border-bottom-left-radius: 100%;
     border-bottom-right-radius: 100%;
-    margin-bottom: 30px;
     background: rgba(0, 0, 0, 0.39);
     box-shadow: inset 0px -12px #470000;
     position: relative;
-    width: 65%;
+    width: 610px;
     margin: auto;
+    transition: all .5s ease;
+    overflow: hidden;
+    max-height: 0;
 }
 
 button#deal {
@@ -57,6 +57,10 @@ body {
     background-repeat: no-repeat;
     min-height: 100vh;
     font-family: 'Ruslan Display', cursive;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 .players {
@@ -76,6 +80,9 @@ body {
     text-align: center;
     min-width: 270px;
     margin-top: 100px;
+    opacity: 0;
+    transition: all .5s ease;
+    transition-delay: .5s;
 }
 
 .player img {
@@ -256,19 +263,58 @@ form#number-form input {
 }
 
 .quit:hover {
-  background-color: red
-}
-
-.betting.new-game h5:after {
-    content: " again";
+  background-color: red;
 }
 
 .betting.new-game {
-    padding: 30px;
+    padding: 30px 0;
 }
 
 .player h3 {
-    background: #000;
+    background: rgba(0, 11, 73, 0.42);
     padding-top: 8px;
     border-radius: 100%;
+}
+.betting:not(.new-game) h5.again {
+    display: none;
+}
+.betting.new-game h5.first {
+    display: none;
+}
+
+.deal-btn {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    top: 40%;
+    background: rgba(72, 0, 0, 0.75);
+    box-shadow: 0 0 0px 0px #000;
+    max-height: 0;
+    overflow: hidden;
+    transition: all .5s cubic-bezier(0.87, 0.1, 0.49, 1.15);
+}
+.deal-btn.show {
+    max-height: 162px;
+    box-shadow: 0 0 1100px 130px #000;
+}
+.subtitle {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 3em;
+    border-bottom: 2px solid;
+}
+
+#names input {
+    margin-right: 33px;
+}
+
+.dealer.show {
+    top: 0;
+    max-height: 326px;
+    padding: 25px 50px 50px;
+}
+
+.player.show {
+    opacity: 1;
 }
