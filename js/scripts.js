@@ -28,13 +28,15 @@ function resetDeck() {
 }
 
 //Player/Dealer Object
-function Player( type, hand, hold, bust, score) {
+function Player( type, hand, hold, bust, score, bet) {
   this.id = 0;
   this.bust = bust;
   this.hold = hold;
   this.playerType = type;
   this.playerHand = hand;
   this.playerScore = score;
+  this.bet = bet;
+  this.wallet = 100;
 }
 
 Player.prototype.playerHtml = function(){
@@ -42,10 +44,18 @@ Player.prototype.playerHtml = function(){
     <h3>Player ` + this.id + `</h3>
     <div class="score-box" id="p` + this.id + `-score"></div>
     <div id="player` + this.id + `" class="game-table"></div>
+    <div id="betting">
+    <h5>PICK YOUR BET</h5>
+    <button type="button" class="btn btn-warning bets" value="5">$5</button>
+    <button type="button" class="btn btn-warning bets" value="10">$10</button>
+    <button type="button" class="btn btn-warning bets" value="25">$25</button>
+    </div>
     <div class="buttons">
       <button type="button" id="hit` + this.id + `" class="btn btn-danger" style="display:none;">Hit</button>
       <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
     </div>
+    <div class="wallet" id="wallet` + this.id + `">$` + this.wallet + `</div>
+    <div class="bet-ammt"></div>
   </div>`
 }
 
@@ -135,6 +145,7 @@ $(function() {
   var players = [];
   var holds = 0;
   var busted = 0;
+  var betsPlaced = 0;
   var dealer = new Player("Dealer", [], false, false, 0);
 
   $('#number-form').submit(function(event){
@@ -142,7 +153,7 @@ $(function() {
     event.preventDefault();
     var howMany = $('#how-many').val();
     for (var i = 0; i < howMany; i++) {
-      var newPlayer = new Player( "Player", [], false, false, 0);
+      var newPlayer = new Player( "Player", [], false, false, 0, 0);
       players.push(newPlayer);
       players[i].id = i + 1;
       var html = players[i].playerHtml();
@@ -151,8 +162,23 @@ $(function() {
     $('.deal-btn').show();
     $(this).hide();
 
-  });
 
+  });
+//bet button ----------------
+  $(".players").off("click").on("click", "button.bets",function() {
+    var bet = parseInt($(this).val());
+    var index = parseInt($(this).parents('.player').attr('id')) - 1;
+    players[index].bet = bet;
+    players[index].wallet = players[index].wallet - players[index].bet;
+    betsPlaced++;
+    $(this).parent().hide();
+    if (betsPlaced === players.length) {
+      $("#deal").show();
+    }
+    $(this).parent().siblings('.bet-ammt').text("$" + bet);
+    console.log(players);
+
+  });//click end
   //deal button
   $('#deal').off("click").on('click', function() {
 
