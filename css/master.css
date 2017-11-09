@@ -318,3 +318,11 @@ form#number-form input {
 .player.show {
     opacity: 1;
 }
+
+.container {
+    text-align: center;
+}
+
+img.title-img {
+    margin-top: 100px;
+}

@@ -170,6 +170,7 @@ $(function() {
 
   $('#number-form').submit(function(event){
     event.preventDefault();
+    $('.title-img').hide();
     $('.dealer').addClass('show');
     var howMany = $('#how-many').val();
     var playerNames = [];
