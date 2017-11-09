@@ -1,7 +1,7 @@
 //----------------BACK END LOGIC------------------
 var masterDeck;
 resetDeck();
-
+console.log(masterDeck);
 //create and reset deck of cards
 function resetDeck() {
   masterDeck = [];
@@ -13,18 +13,20 @@ function resetDeck() {
     this.image = face + suit + ".png";
   }
   var suits = ["hearts", "spades", "diamonds", "clubs"]
-  suits.forEach(function(suit) {
-    for (var i = 2; i <= 11; i++) {
-      if (i === 10) {
-        masterDeck.push(new Cards(10, "10", suit));
-        masterDeck.push(new Cards(10, "J", suit));
-        masterDeck.push(new Cards(10, "Q", suit));
-        masterDeck.push(new Cards(10, "K", suit));
-      } else {
-        masterDeck.push(new Cards(i, "" + i + "", suit));
+  for (var i = 0; i < 5; i++) {
+    suits.forEach(function(suit) {
+      for (var i = 2; i <= 11; i++) {
+        if (i === 10) {
+          masterDeck.push(new Cards(10, "10", suit));
+          masterDeck.push(new Cards(10, "J", suit));
+          masterDeck.push(new Cards(10, "Q", suit));
+          masterDeck.push(new Cards(10, "K", suit));
+        } else {
+          masterDeck.push(new Cards(i, "" + i + "", suit));
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 //Player/Dealer Object
@@ -38,7 +40,8 @@ function Player( type, hand, hold, bust, score) {
 }
 
 Player.prototype.playerHtml = function(){
-  return `<div class="player" id="` + this.id + `">
+  return `
+  <div class="player" id="` + this.id + `">
     <h3>Player ` + this.id + `</h3>
     <div class="score-box" id="p` + this.id + `-score"></div>
     <div id="player` + this.id + `" class="game-table"></div>
@@ -46,6 +49,7 @@ Player.prototype.playerHtml = function(){
       <button type="button" id="hit` + this.id + `" class="btn btn-danger" style="display:none;">Hit</button>
       <button type="button" id="hold` + this.id + `" class="btn btn-dark" style="display:none;">Hold</button>
     </div>
+    <button id="remove` + this.id + `" class="quit btn btn-dark">Leave Game</button>
   </div>`
 }
 
@@ -213,7 +217,11 @@ $(function() {
       $(this).parent().hide();
     });
 
-
+    $('.quit').off("click").on("click", function(){
+      var removeThis = parseInt($(this).parent().attr('id')) - 1;
+      players.splice(removeThis, 1);
+      $(this).parent().hide();
+    });
     // $('button').off("click").on('click', function(){
     //   console.log(players);
     //   console.log(dealer);

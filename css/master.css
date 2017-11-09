@@ -1,3 +1,7 @@
+.bets {
+  display: none;
+}
+
 .game-table{
     position: relative;
 }
@@ -41,6 +45,8 @@ img.hidden {
     background: rgba(0, 0, 0, 0.39);
     box-shadow: inset 0px -12px #470000;
     position: relative;
+    width: 65%;
+    margin: auto;
 }
 
 button#deal {
@@ -97,16 +103,12 @@ body {
     margin-top: 40px;
 }
 
-.deal-btn {
-    background: #470000;
-    padding: 12px;
-    margin-bottom: 33px;
-    border-radius: 100%;
-}
-
 .deal-btn .btn {
     font-size: 40px;
     cursor: pointer;
+    border-radius: 100%;
+    padding: 30px;
+    box-shadow: 0 0 6px 2px #000, 0 0 20px 12px #09ffe8;
 }
 
 div#dealer-score {
@@ -147,6 +149,10 @@ div#dealer-score {
     content: "PUSH";
 }
 
+.push {
+    background: rgba(37, 68, 224, 0.32);
+}
+
 .busted:after, .lost:after, .win:after, .push:after {
     position: absolute;
     top: 0;
@@ -159,6 +165,8 @@ div#dealer-score {
     font-size: 5em;
     transform: rotate(-45deg);
     text-shadow: 0 0 23px #000;
+    line-height: 1;
+    pointer-events: none;
 }
 
 form#number-form {
