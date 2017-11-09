@@ -79,7 +79,7 @@ _Enter The Following Commands in Terminal_
  * cd 21-new-repo
  * atom .
 
- _Or Follow this Link_ https://samkissee.github.io/21-new-repo
+ _Or Follow this Link_ https://samkissee.github.io/21-new-repo/
 
  ## Bugs
  _No Known Bugs_
