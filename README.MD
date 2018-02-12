@@ -75,11 +75,11 @@
 
 _Enter The Following Commands in Terminal_
  * cd desktop
- * git clone https://github.com/SamKissee/21-new-repo
+ * git clone https://github.com/SamKissee/BlackJack-Javascript.git
  * cd 21-new-repo
  * atom .
 
- _Or Follow this Link_ https://samkissee.github.io/21-new-repo/
+ _Or Follow this Link_ https://samkissee.github.io/BlackJack-Javascript/
 
  ## Bugs
  _No Known Bugs_
