@@ -13,6 +13,7 @@
   * Enter: 2 players
   * Return: 2 game boxes
 
+
 * It will recognize player bets
   * Enter:  $5
   * Return: Bets: $5
